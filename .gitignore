@@ -1,26 +1,10 @@
-# IDEs and project files
+# Environment files
+.env
+
+# IDE files
 .idea/
 *.iml
 
-# Environment files
-!.env
-
-# Certificates and private keys (already tracked files remain tracked)
-*.key
-*.pem
-*.p12
-*.pfx
-*.crt
-*.cer
-
-# macOS metadata
+# OS files
 .DS_Store
-
-# Logs
-logs/
-*.log
-
-# Node / Front-end (if any gets added later)
-node_modules/
-dist/
-build/
+Thumbs.db

@@ -23,6 +23,10 @@ Note: This setup uses self-signed certificates for local development. Your brows
   cp .env.sample .env
   ```
 - The .env file is used by the Apache container to configure OIDC endpoints and client credentials. The sample contains working defaults for this repository.
+- Note: .env is git-ignored in this repository. If it was previously tracked, run:
+  ```bash
+  git rm --cached .env
+  ```
 
 ## 3. Quick start
 ```bash
