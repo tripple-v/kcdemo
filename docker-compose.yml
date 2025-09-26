@@ -1,0 +1,66 @@
+services:
+
+  web:
+    image: bellackn/httpd_oidc
+    platform: linux/amd64
+    env_file: .env
+    container_name: apache_oidc-kcdemo
+    ports:
+      - "443:443"
+    depends_on:
+      - keycloak-https
+    volumes:
+      - ./web/apache/conf/extra/kcdemo-ssl.conf:/usr/local/apache2/conf/extra/kcdemo-ssl.conf
+      - ./web/apache/conf/httpd.conf:/usr/local/apache2/conf/httpd.conf
+      - ./my-ssl.crt:/usr/local/apache2/conf/my-ssl.crt
+      - ./my-ssl.key:/usr/local/apache2/conf/my-ssl.key
+      - ./keycloak/certs:/usr/local/apache2/conf/certs
+      - ./web/html:/usr/local/apache2/htdocs:ro
+
+
+  mariadb-kc:
+    image: mariadb:latest
+    container_name: mariadb-kcdemo-kc
+    environment:
+      MARIADB_ROOT_PASSWORD: secret
+      MARIADB_DATABASE: keycloak
+      MARIADB_USER: keycloak
+      MARIADB_PASSWORD: keycloak
+    volumes:
+      - mariadb-data-kc:/var/lib/mysql
+    ports:
+      - "3307:3306"
+
+  keycloak-https:
+    image: quay.io/keycloak/keycloak:26.3
+    platform: linux/amd64
+    container_name: keycloak-kcdemo-https
+    command: >
+      start-dev
+      --hostname auth.kcdemo.local
+      --https-certificate-file=/etc/x509/https/tls.crt
+      --https-certificate-key-file=/etc/x509/https/tls.key
+      --https-port 8443
+      --hostname-strict=false
+      --import-realm
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+
+      # BDD Config
+      KC_DB: mariadb
+      KC_DB_URL_HOST: mariadb-kc
+      KC_DB_URL_DATABASE: keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: keycloak
+      KC_DB_PORT: 3307
+    depends_on:
+      - mariadb-kc
+    volumes:
+      - ./keycloak/certs:/etc/x509/https:ro
+      - ./keycloak/realm-export:/opt/keycloak/data/import
+    ports:
+      - "8443:8443"
+
+volumes:
+  mariadb-data-kc:

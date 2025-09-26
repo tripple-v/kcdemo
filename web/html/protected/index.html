@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Keycloak Demo - Protected page</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 900px; margin: 40px auto; line-height: 1.6; }
+    pre { background: #f5f5f5; padding: 12px; border-radius: 6px; overflow-x: auto; }
+    a.button { display: inline-block; padding: 10px 14px; background: #4c8bf5; color: #fff; text-decoration: none; border-radius: 6px; }
+    .muted { color: #555; }
+    .error { color: #b00020; }
+  </style>
+</head>
+<body>
+  <h1>Protected page</h1>
+  <p>You are authenticated via Keycloak (mod_auth_openidc).</p>
+  <p><a class="button" href="/">Back to home</a></p>
+  <hr />
+
+  <h2>User information (userinfo)</h2>
+  <p class="muted">All data returned by the OIDC <code>/userinfo</code> endpoint is displayed below.</p>
+  <pre id="userinfo">Loading information…</pre>
+
+  <script>
+    async function loadUserInfo() {
+      const el = document.getElementById('userinfo');
+      try {
+        const resp = await fetch('/userinfo', { credentials: 'include' });
+        if (!resp.ok) {
+          const text = await resp.text();
+          throw new Error(`HTTP error ${resp.status}: ${text || resp.statusText}`);
+        }
+        const data = await resp.json();
+        // Nicely display all keys/values
+        el.textContent = JSON.stringify(data, null, 2);
+      } catch (e) {
+        el.classList.add('error');
+        el.textContent = 'Unable to load /userinfo: ' + (e && e.message ? e.message : e);
+      }
+    }
+    loadUserInfo();
+  </script>
+
+  <hr />
+  <h2>Useful HTTP headers</h2>
+  <p class="muted">Apache can forward identity information (REMOTE_USER, etc.).</p>
+  <pre>
+Examples:
+- REMOTE_USER: your Keycloak username
+  </pre>
+</body>
+</html>
