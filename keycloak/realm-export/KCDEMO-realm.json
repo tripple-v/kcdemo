@@ -37,7 +37,7 @@
       "serviceAccountsEnabled": false,
       "authorizationServicesEnabled": false,
       "redirectUris": [
-        "https://app.kcdemo.local:443/*"
+        "https://app.kcdemo.local/*"
       ],
       "webOrigins": [
         "+"
@@ -47,7 +47,7 @@
       },
       "clientAuthenticatorType": "client-secret",
       "secret": "MAfAlCC1xBRuoRtd8REFExOdsWGhBDrV",
-      "rootUrl": "https://app.kcdemo.local:443",
+      "rootUrl": "https://app.kcdemo.local",
       "baseUrl": "/"
     }
   ]
