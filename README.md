@@ -12,7 +12,7 @@ Note: This setup uses self-signed certificates for local development. Your brows
 
 ## 1. Prerequisites
 - Docker Desktop or Docker Engine + Docker Compose
-- Free ports on the host: 443 (Apache) and 8443 (Keycloak)
+- Free ports on the host: 443 (Apache), 8443 (Keycloak), 8025 (MailHog UI), 1025 (MailHog SMTP)
 - Add the following entries to your hosts file (e.g., /etc/hosts on macOS/Linux, C:\Windows\System32\drivers\etc\hosts on Windows WSL2 host):
   - `127.0.0.1 app.kcdemo.local`
   - `127.0.0.1 auth.kcdemo.local`
@@ -38,6 +38,7 @@ Wait a few seconds for the services to start, then open:
 - Site: https://app.kcdemo.local/
 - Protected page: https://app.kcdemo.local/protected/
 - Keycloak Admin Console: https://auth.kcdemo.local:8443/
+- MailHog UI (captures all outgoing emails): http://localhost:8025/
 
 Default accounts:
 - Keycloak Admin: `admin` / `admin`
@@ -47,7 +48,10 @@ Default accounts:
 1. Visit the public page: https://app.kcdemo.local/
 2. Go to the protected page: https://app.kcdemo.local/protected/
 3. You will be redirected to Keycloak (realm `KCDEMO`) at https://auth.kcdemo.local:8443. Sign in with `demo` / `demo`.
-4. You will be redirected back to the protected page.
+4. Because this demo user is not email-verified on import, Keycloak will ask you to verify the email address. Open MailHog (http://localhost:8025), find the verification email, and click the link to proceed.
+5. You will be redirected back to the protected page.
+
+Tip: You can also test the "Forgot Password" flow on the Keycloak login page; the reset email will appear in MailHog as well.
 
 ## 5. Architecture and components
 - Keycloak (quay.io/keycloak/keycloak:26.3)
@@ -61,8 +65,11 @@ Default accounts:
   - Uses self-signed certificate/key `my-ssl.crt` / `my-ssl.key` mounted into the container.
 - MariaDB
   - Provides the Keycloak database. Configuration is internal to docker-compose.
+- MailHog (mock SMTP)
+  - SMTP server exposed on port 1025, Web UI on http://localhost:8025.
+  - Keycloak is preconfigured to send all realm emails (verification, reset password, etc.) to MailHog.
 
-Networking: services run on the same Docker network. Apache reaches Keycloak via container name `keycloak-https` over HTTPS (8443). SSL verification for the internal call is disabled for local development in Apache config (OIDCSSLValidateServer Off).
+Networking: services run on the same Docker network. Apache reaches Keycloak via container name `keycloak-https` over HTTPS (8443). SSL verification for the internal call is disabled for local development in Apache config (OIDCSSLValidateServer Off). Keycloak reaches SMTP via container name `mailhog` on port 1025.
 
 ## 6. Customization
 - Environment variables (from `.env`):
@@ -76,7 +83,16 @@ Networking: services run on the same Docker network. Apache reaches Keycloak via
   - `API_BASE_URL`: Base host for a backend API proxy (if used).
 - If you change domain/port, update both Keycloak client settings in `KCDEMO-realm.json` (redirectUris, rootUrl) and your `.env` values.
 
-## 7. Useful commands
+## 7. Email OTP note (optional)
+This demo focuses on demonstrating email capabilities (verification and reset password) via MailHog. If you specifically want an email-based One-Time Password (OTP) step during login, Keycloak versions may require enabling or installing an email-OTP authenticator. Options include:
+- Using a built-in Email OTP authenticator if available in your Keycloak distribution/version (configure it in Authentication Flows by adding the Email OTP execution to the Browser flow).
+- Installing a community email-otp authenticator provider compatible with your Keycloak version.
+
+With the current realm export, you can still demonstrate email usage via:
+- Email verification (triggered on first login because the demo user's email is not verified).
+- Forgot password / reset credentials flow.
+
+## 8. Useful commands
 - Start (includes build):
   ```bash
   docker compose up --build

@@ -31,6 +31,13 @@ services:
     ports:
       - "3307:3306"
 
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: mailhog-kcdemo
+    ports:
+      - "1025:1025"   # SMTP
+      - "8025:8025"   # Web UI
+
   keycloak-https:
     image: quay.io/keycloak/keycloak:26.3
     platform: linux/amd64
@@ -56,6 +63,7 @@ services:
       KC_DB_PORT: 3307
     depends_on:
       - mariadb-kc
+      - mailhog
     volumes:
       - ./keycloak/certs:/etc/x509/https:ro
       - ./keycloak/realm-export:/opt/keycloak/data/import

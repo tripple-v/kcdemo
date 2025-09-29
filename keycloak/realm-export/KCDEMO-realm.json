@@ -6,11 +6,21 @@
   "duplicateEmailsAllowed": false,
   "resetPasswordAllowed": true,
   "internationalizationEnabled": false,
+  "smtpServer": {
+    "host": "mailhog",
+    "port": "1025",
+    "from": "no-reply@kcdemo.local",
+    "fromDisplayName": "KCDEMO",
+    "replyTo": "support@kcdemo.local",
+    "starttls": "false",
+    "ssl": "false",
+    "auth": "false"
+  },
   "users": [
     {
       "username": "demo",
       "enabled": true,
-      "emailVerified": true,
+      "emailVerified": false,
       "firstName": "Demo",
       "lastName": "User",
       "email": "demo@example.com",
