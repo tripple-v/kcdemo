@@ -7,7 +7,8 @@
     const el = document.getElementById('userinfo');
     if (!el) return; // Only on protected page
     try {
-      const resp = await fetch('/userinfo', { credentials: 'include' });
+      const resp = await fetch(`/userinfo?ts=${Date.now()}`, { credentials: 'include', cache: 'no-store' });
+
       if (!resp.ok) {
         let text = '';
         try { text = await resp.text(); } catch (_) {}

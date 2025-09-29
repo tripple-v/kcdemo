@@ -10,7 +10,7 @@ services:
     depends_on:
       - keycloak-https
     volumes:
-      - ./web/apache/conf/extra/kcdemo-ssl.conf:/usr/local/apache2/conf/extra/kcdemo-ssl.conf
+      - ./web/apache/conf/extra/kcdemo.conf:/usr/local/apache2/conf/extra/kcdemo.conf
       - ./web/apache/conf/httpd.conf:/usr/local/apache2/conf/httpd.conf
       - ./my-ssl.crt:/usr/local/apache2/conf/my-ssl.crt
       - ./my-ssl.key:/usr/local/apache2/conf/my-ssl.key
