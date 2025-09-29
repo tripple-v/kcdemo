@@ -20,6 +20,7 @@
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
           <li class="nav-item"><a class="nav-link active" aria-current="page" href="/protected/">Protected area</a></li>
+          <li class="nav-item"><a class="nav-link" href="/manager/">Manager area</a></li>
         </ul>
         <div class="d-flex">
           <a class="btn btn-outline-light" href="/">Home</a>
@@ -41,8 +42,8 @@
       <div class="col-12">
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title mb-2">User information</h5>
-            <p class="text-muted mb-3">Data returned by the OIDC endpoint <code>/userinfo</code>.</p>
+            <h5 class="card-title mb-2">User info and tokens</h5>
+            <p class="text-muted mb-3">Combined JSON from mod_auth_openidc (<code>info=json</code>): includes <code>userinfo</code>, <code>access_token</code>, and <code>id_token</code>.</p>
             <pre id="userinfo" class="code-block">Loading…</pre>
           </div>
         </div>

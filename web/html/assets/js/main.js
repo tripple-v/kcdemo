@@ -5,7 +5,7 @@
   // Helper: fetch /userinfo and display it if the target element exists
   async function loadUserInfo() {
     const el = document.getElementById('userinfo');
-    if (!el) return; // Only on protected page
+    if (!el) return; // Only on protected/manager pages
     try {
       const resp = await fetch(`/userinfo?ts=${Date.now()}`, { credentials: 'include', cache: 'no-store' });
 
@@ -23,10 +23,14 @@
     }
   }
 
+  function init() {
+    loadUserInfo();
+  }
+
   // Initialize on DOM ready
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', loadUserInfo);
+    document.addEventListener('DOMContentLoaded', init);
   } else {
-    loadUserInfo();
+    init();
   }
 })();
