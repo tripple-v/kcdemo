@@ -1,0 +1,63 @@
+/* Custom styles for Keycloak Demo */
+:root {
+  --brand: #5b8def;
+  --brand-dark: #3d6fd6;
+  --bg: #0f172a; /* slate-900 */
+  --card-bg: #ffffff;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  background: linear-gradient(135deg, #0f172a 0%, #1f2937 40%, #0b1220 100%);
+  color: #e5e7eb; /* text-gray-200 */
+}
+
+.hero {
+  padding: 80px 0 40px;
+}
+
+.hero .display-5, .hero .lead {
+  color: #f8fafc;
+}
+
+.card {
+  border: 0;
+  border-radius: 14px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+}
+
+pre.code-block {
+  background: #0b1220;
+  color: #d1d5db;
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.footer-muted {
+  color: #9ca3af;
+}
+
+.navbar-glass {
+  backdrop-filter: saturate(180%) blur(8px);
+  background-color: rgba(15, 23, 42, 0.6) !important;
+}
+
+.btn-brand {
+  background-color: var(--brand);
+  border-color: var(--brand);
+}
+.btn-brand:hover, .btn-brand:focus {
+  background-color: var(--brand-dark);
+  border-color: var(--brand-dark);
+}
+
+a.link-light-muted {
+  color: #cbd5e1;
+}
+a.link-light-muted:hover {
+  color: #ffffff;
+}

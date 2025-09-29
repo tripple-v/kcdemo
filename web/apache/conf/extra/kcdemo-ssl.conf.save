@@ -9,40 +9,40 @@ Define api_base_url https://host.docker.internal:9012/api
 #</IfModule>
 
 # -----------------------------------
-# Configuration du module OIDC
+# OIDC module configuration
 # -----------------------------------
 <IfModule auth_openidc_module>
 
     OIDCCookieHTTPOnly Off
     OIDCSSLValidateServer Off
 
-    # URL de découverte OpenID Connect (metadata) => ex: Keycloak
-    # Remplace <KEYCLOAK_HOST> et <REALM> selon ton setup
+    # OpenID Connect discovery (metadata) URL (e.g., Keycloak)
+    # Replace <KEYCLOAK_HOST> and <REALM> according to your setup
     OIDCProviderMetadataURL ${OIDC_PROVIDER_INTERNAL}${OIDC_REALM}/.well-known/openid-configuration
     OIDCProviderIssuer ${OIDC_PROVIDER}${OIDC_REALM}
     OIDCProviderAuthorizationEndpoint ${OIDC_PROVIDER}${OIDC_REALM}/protocol/openid-connect/auth
     OIDCProviderJwksUri ${OIDC_PROVIDER_INTERNAL}${OIDC_REALM}/protocol/openid-connect/certs
     OIDCProviderTokenEndpoint ${OIDC_PROVIDER_INTERNAL}${OIDC_REALM}/protocol/openid-connect/token
     OIDCProviderUserInfoEndpoint ${OIDC_PROVIDER_INTERNAL}${OIDC_REALM}/protocol/openid-connect/userinfo
-    # L'URI vers laquelle Keycloak redirige après login
-    # Elle doit matcher une "Valid redirect URI" dans la config du client Keycloak
+    # The URI Keycloak redirects to after login
+    # Must match a "Valid redirect URI" in the Keycloak client configuration
     OIDCRedirectURI ${portal_base_url}/redirect_uri
-    # Clé secrète pour chiffrer les cookies (n'importe quelle phrase longue)
+    # Secret key to encrypt cookies (any long passphrase)
     OIDCCryptoPassphrase ${OIDC_CRYPT}
-    # L'ID client configuré dans Keycloak
+    # Client ID configured in Keycloak
     OIDCClientID ${OIDC_CLIENT}
-    # Le secret configuré dans Keycloak
+    # Client secret configured in Keycloak
     OIDCClientSecret ${OIDC_SECRET}
     OIDCRemoteUserClaim preferred_username
     OIDCInfoHook userinfo
 
-    # Scopes qu'on veut demander
+    # Scopes to request
     OIDCScope "openid profile email"
 
-    # Si on veut forcer le HTTPS sur la redirection
+    # If you want to enforce HTTPS on redirect
     # OIDCRequireSSL on
 
-    # Où stocker les sessions (cookies, DB, memcache, Redis...), ici juste en cookies
+    # Where to store sessions (cookies, DB, memcache, Redis...), here: server-cache
     OIDCSessionType "server-cache"
 
     OIDCDefaultLoggedOutURL ${portal_base_url}
@@ -55,7 +55,7 @@ Define api_base_url https://host.docker.internal:9012/api
     OIDCDefaultURL ${portal_base_url}
     OIDCCookie mod_auth_oidc_session
 
-    # Transmettre les claims utilisateur dans les en-têtes
+    # Pass user claims in headers
     OIDCPassClaimsAs "headers"
     OIDCClaimPrefix "X-USER-"
 
@@ -64,7 +64,7 @@ Define api_base_url https://host.docker.internal:9012/api
 </IfModule>
 
 # -----------------------------------
-# Configuration des VirtualHosts
+# VirtualHosts configuration
 # -----------------------------------
 Listen 443
 <VirtualHost *:443>
@@ -88,7 +88,7 @@ Listen 443
     ProxyPass "/" "http://host.docker.internal:4200/"
     ProxyPassReverse "/" "http://host.docker.internal:4200/"
 
-    # Proxy pour les WebSockets
+    # WebSocket proxy
     RewriteEngine On
     RewriteCond %{HTTP:Upgrade} =websocket [NC]
     RewriteRule /(.*) ws://host.docker.internal:4200/$1 [P,L]
@@ -99,23 +99,23 @@ Listen 443
     ProxyPass "/vite/" "ws://host.docker.internal:4200/vite/"
     ProxyPassReverse "/vite/" "ws://host.docker.internal:4200/vite/"
 
-    # DocumentRoot si tu sers une appli statique (Angular build)
+    # DocumentRoot if you serve a static app (Angular build)
     DocumentRoot "/usr/local/apache2/htdocs"
 
 
-    # Forcer l'authentification sur toutes les pages
+    # Enforce authentication on all pages
     <Location />
         AuthType openid-connect
         Require valid-user
     </Location>
 
-     # Exclure certains endpoints de l'auth
+     # Exclude some endpoints from auth
      <Location /public>
          Require all granted
      </Location>
 
 
-    # Endpoint pour récupérer les infos utilisateur
+    # Endpoint to fetch user information
     <Location /userinfos>
         AuthType openid-connect
         Require valid-user

@@ -54,7 +54,7 @@ services:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
 
-      # BDD Config
+      # Database config
       KC_DB: mariadb
       KC_DB_URL_HOST: mariadb-kc
       KC_DB_URL_DATABASE: keycloak
