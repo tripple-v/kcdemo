@@ -117,6 +117,34 @@ body.login-pf {
   color: #f8fafc !important;
   box-shadow: none !important;
 }
+/* Ensure password inputs have strong contrast in all states */
+.login-pf-page input[type="password"],
+.login-pf-page input#password,
+.login-pf-page input#password-new,
+.login-pf-page input#password-confirm,
+.login-pf-page input[name="password"],
+.login-pf-page .pf-c-form-control[type="password"] {
+  background: rgba(255,255,255,0.08) !important; /* dark translucent */
+  border: 1px solid rgba(255,255,255,0.24) !important;
+  color: #f8fafc !important; /* light text on dark */
+  caret-color: #f8fafc !important;
+}
+/* Autofill fixes (Chrome/Safari) to avoid white/yellow background with white text) */
+.login-pf-page input[type="password"]:-webkit-autofill,
+.login-pf-page input#password:-webkit-autofill,
+.login-pf-page input#password-new:-webkit-autofill,
+.login-pf-page input#password-confirm:-webkit-autofill,
+.login-pf-page input[name="password"]:-webkit-autofill {
+  -webkit-text-fill-color: #f8fafc !important;
+  transition: background-color 5000s ease-in-out 0s; /* prevent flash */
+  box-shadow: 0 0 0px 1000px rgba(255,255,255,0.08) inset !important; /* override autofill bg */
+}
+/* When password is revealed (type toggled to text), ensure same styling */
+.login-pf-page input[data-password-toggle="visible"],
+.login-pf-page input[type="text"][name="password"] {
+  background: rgba(255,255,255,0.08) !important;
+  color: #f8fafc !important;
+}
 .login-pf-page input::placeholder,
 .login-pf-page .form-control::placeholder { color: #cbd5e1; opacity: .85; }
 .login-pf-page input:focus,
@@ -151,3 +179,35 @@ body.login-pf {
 }
 /* Make sure the dropdown sits above the card and doesn’t clip */
 #kc-locale { z-index: 1100; }
+
+/* Fix input group background and reveal/hide control for dark theme */
+.login-pf-page .pf-c-input-group {
+  /* Ensure the PatternFly input-group uses our dark translucent background */
+  --pf-c-input-group--BackgroundColor: rgba(255,255,255,0.08) !important;
+  background-color: var(--pf-c-input-group--BackgroundColor) !important;
+  border: 1px solid rgba(255,255,255,0.18) !important;
+  border-radius: 3px; /* match PF default radius */
+}
+/* Avoid double backgrounds: let the group provide the bg */
+.login-pf-page .pf-c-input-group .pf-c-form-control {
+  background-color: transparent !important;
+  border: 0 !important; /* border is on the group */
+  color: #f8fafc !important;
+}
+/* Style the eye toggle button (PatternFly control button) */
+.login-pf-page .pf-c-input-group .pf-c-button.pf-m-control,
+.login-pf-page .pf-c-input-group .pf-c-button.pf-m-plain {
+  background-color: rgba(255,255,255,0.08) !important;
+  color: #e5e7eb !important;
+  border-left: 1px solid rgba(255,255,255,0.18) !important;
+}
+.login-pf-page .pf-c-input-group .pf-c-button.pf-m-control:hover,
+.login-pf-page .pf-c-input-group .pf-c-button.pf-m-plain:hover {
+  background-color: rgba(255,255,255,0.14) !important;
+  color: #ffffff !important;
+}
+.login-pf-page .pf-c-input-group .pf-c-button.pf-m-control:focus,
+.login-pf-page .pf-c-input-group .pf-c-button.pf-m-plain:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(91,141,239,0.25) !important;
+}
