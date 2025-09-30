@@ -59,5 +59,6 @@ a.link-light-muted {
   color: #cbd5e1;
 }
 a.link-light-muted:hover {
-  color: #ffffff;
+  color: var(--brand-dark);
+  text-decoration: underline;
 }
