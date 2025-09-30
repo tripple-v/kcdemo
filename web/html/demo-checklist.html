@@ -77,6 +77,14 @@
               </div>
 
               <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="todo-webauthn-flow">
+                <label class="form-check-label" for="todo-webauthn-flow">
+                  Authentication flows: WebAuthn <span class="time-badge">3–4 min</span>
+                </label>
+                <div class="hint">Clone the Browser flow, add a WebAuthn execution, override it on the client, and have a user enroll a security key on login.</div>
+              </div>
+
+              <div class="form-check">
                 <input class="form-check-input" type="checkbox" id="todo-roles">
                 <label class="form-check-label" for="todo-roles">
                   Roles, groups, and RBAC to protect routes <span class="time-badge">3–4 min</span>
@@ -96,9 +104,9 @@
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" id="todo-sessions">
                 <label class="form-check-label" for="todo-sessions">
-                  Session management and single logout <span class="time-badge">2 min</span>
+                  Event management <span class="time-badge">2 min</span>
                 </label>
-                <div class="hint">Show active sessions in Admin Console, then perform logout and verify session termination.</div>
+                <div class="hint">Enable user events, then perform logout/login and verify events in console.</div>
               </div>
 
               <div class="form-check">
@@ -128,6 +136,112 @@
 
             <hr class="my-4" />
             <p class="mb-0 hint">Tip: If timing is tight, prioritize Email verification, 2FA, RBAC, and Client mappers. The rest can be summarized verbally.</p>
+          </div>
+        </div>
+
+        <!-- Collapsible steps for Fine-grained authorization (Authorization Services) -->
+        <div class="card mt-4">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <h5 class="card-title mb-0">Authorization Services – Setup steps</h5>
+              <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#authzSteps" aria-expanded="false" aria-controls="authzSteps">
+                Show / Hide
+              </button>
+            </div>
+            <div class="collapse mt-3" id="authzSteps">
+              <p class="hint mb-2">Goal: briefly show resources, scopes, policies, and permissions for a client and demonstrate an access decision using the <em>Evaluate</em> tab.</p>
+              <ol class="mb-3">
+                <li>
+                  Open Keycloak Admin Console and select the KCDEMO realm:<br/>
+                  <a class="link-light-muted" href="https://auth.kcdemo.local:8443" target="_blank" rel="noopener">https://auth.kcdemo.local:8443</a>
+                </li>
+                <li>
+                  Go to <strong>Clients</strong> ➜ <strong>kcdemo-portal</strong> ➜ <strong>Authorization</strong> and click <strong>Enable</strong> if not already enabled.
+                </li>
+                <li>
+                  Create a <strong>Resource</strong>:
+                  <ul class="mt-2">
+                    <li>Name: <code>Reports</code></li>
+                    <li>URIs: <code>/manager/*</code> or <code>/api/reports/*</code> (for demo purpose)</li>
+                  </ul>
+                </li>
+                <li>
+                  Create a <strong>Scope</strong> named <code>view</code>.
+                </li>
+                <li>
+                  Create a <strong>Policy</strong> of type <strong>Role</strong> called <code>Managers only</code> and select the realm role <code>kcdemo-manager</code>.
+                </li>
+                <li>
+                  Create a <strong>Permission</strong> (type <strong>Scope</strong>) called <code>View reports</code> that links:
+                  <ul class="mt-2">
+                    <li>Resources: <code>Reports</code></li>
+                    <li>Scopes: <code>view</code></li>
+                    <li>Policies: <code>Managers only</code></li>
+                  </ul>
+                </li>
+                <li>
+                  Demonstrate an access decision via <strong>Evaluate</strong>:
+                  <ul class="mt-2">
+                    <li>Select Resource: <code>Reports</code>, Scope: <code>view</code></li>
+                    <li>User: <code>demo-manager</code> (has role via group) ➜ <strong>PERMIT</strong></li>
+                    <li>User: <code>demo</code> ➜ <strong>DENY</strong></li>
+                  </ul>
+                </li>
+              </ol>
+              <p class="hint mb-0">Tip: For a pure UI demo, the <em>Evaluate</em> tab is enough. If you have a resource server, you can also show UMA/RPT enforcement; not required here.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Collapsible steps for WebAuthn authentication flow -->
+        <div class="card mt-4">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <h5 class="card-title mb-0">WebAuthn authentication flow – Setup steps</h5>
+              <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#webauthnSteps" aria-expanded="false" aria-controls="webauthnSteps">
+                Show / Hide
+              </button>
+            </div>
+            <div class="collapse mt-3" id="webauthnSteps">
+              <p class="hint mb-2">Goal: demonstrate how to modify a client’s authentication flow to include WebAuthn, and force a user to enroll a WebAuthn authenticator.</p>
+              <ol class="mb-3">
+                <li>
+                  Open Keycloak Admin Console and select the KCDEMO realm:<br/>
+                  <a class="link-light-muted" href="https://auth.kcdemo.local:8443" target="_blank" rel="noopener">https://auth.kcdemo.local:8443</a>
+                </li>
+                <li>
+                  Verify realm WebAuthn policy (already preconfigured in this repo):<br/>
+                  Realm Settings ➜ Security Defenses ➜ WebAuthn:
+                  <ul class="mt-2">
+                    <li>RP ID: <code>auth.kcdemo.local</code></li>
+                    <li>RP Origins: <code>https://auth.kcdemo.local:8443</code></li>
+                  </ul>
+                </li>
+                <li>
+                  Create a dedicated flow to use for the client:
+                  <ul class="mt-2">
+                    <li>Authentication ➜ Flows ➜ <strong>Browser</strong> ➜ <strong>Actions ➜ Clone</strong>, name it <code>browser-webauthn-demo</code>.</li>
+                    <li>In the cloned flow, in the <em>forms</em> subflow, click <strong>Add execution</strong> ➜ choose <strong>WebAuthn Authenticator</strong>, set Requirement to <strong>ALTERNATIVE</strong>.</li>
+                    <li>Keep existing Username Password and OTP steps as-is for a simple demo.</li>
+                  </ul>
+                </li>
+                <li>
+                  Apply the flow to the client (override):<br/>
+                  Clients ➜ <strong>kcdemo-portal</strong> ➜ <strong>Authentication flow overrides</strong> ➜ <strong>Browser flow</strong> = <code>browser-webauthn-demo</code> ➜ Save.
+                </li>
+                <li>
+                  Use the prepared user to trigger WebAuthn enrollment:
+                  <ul class="mt-2">
+                    <li>User: <code>demo-webauthn</code> / password <code>demo</code></li>
+                    <li>This user has the required action <code>webauthn-register</code> and will be prompted to enroll a security key.</li>
+                  </ul>
+                </li>
+                <li>
+                  Test the login: open the protected area and sign in as <code>demo-webauthn</code>. Enroll the authenticator when prompted and complete the login.
+                </li>
+              </ol>
+              <p class="hint mb-0">Notes: You can also demo passwordless by adding the <em>WebAuthn Passwordless Authenticator</em> and using the <em>webauthn-register-passwordless</em> required action for a different user.</p>
+            </div>
           </div>
         </div>
 

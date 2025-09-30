@@ -67,6 +67,7 @@ services:
     volumes:
       - ./keycloak/certs:/etc/x509/https:ro
       - ./keycloak/realm-export:/opt/keycloak/data/import
+      - ./keycloak/themes:/opt/keycloak/themes:ro
     ports:
       - "8443:8443"
 

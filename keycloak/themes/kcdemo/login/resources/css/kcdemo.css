@@ -1,0 +1,153 @@
+/* KCDEMO login theme customizations */
+:root{
+  --kcdemo-brand:#5b8def;
+  --kcdemo-brand-dark:#3d6fd6;
+  --kcdemo-bg1:#0f172a; /* slate-900 */
+  --kcdemo-bg2:#1f2937; /* gray-800 */
+}
+
+body.login-pf {
+  background: linear-gradient(135deg, var(--kcdemo-bg1) 0%, var(--kcdemo-bg2) 60%, #0b1220 100%) !important;
+}
+
+#kc-header {
+  background: transparent !important;
+}
+#kc-header-wrapper {
+  color:#e5e7eb !important;
+  font-weight:700;
+}
+
+.card-pf, .login-pf-page .card-pf {
+  border-radius:14px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.06) !important;
+  color:#e5e7eb;
+  box-shadow:0 10px 25px rgba(0,0,0,0.25);
+}
+
+.pf-c-button.pf-m-primary, #kc-login, #kc-register, input[type="submit"], button[type="submit"] {
+  background-color: var(--kcdemo-brand) !important;
+  border-color: var(--kcdemo-brand) !important;
+}
+.pf-c-button.pf-m-primary:hover, #kc-login:hover, #kc-register:hover {
+  background-color: var(--kcdemo-brand-dark) !important;
+  border-color: var(--kcdemo-brand-dark) !important;
+}
+
+#kc-page-title { color:#f8fafc; }
+.login-pf-page .login-pf-settings, .login-pf-page .login-pf-signup { color:#cbd5e1; }
+
+.kcdemo-badge {
+  display:inline-block;
+  font-size:.85rem;
+  color:#cbd5e1;
+  border:1px solid rgba(255,255,255,.2);
+  border-radius:999px;
+  padding:.15rem .6rem;
+  margin-top:.5rem;
+}
+
+/* Locale selector improvements */
+#kc-locale { position: absolute; top: 12px; right: 16px; z-index: 1000; }
+#kc-locale .kc-dropdown > a,
+#kc-current-locale-link,
+.pf-c-dropdown__toggle {
+  color:#e5e7eb !important;
+  background: rgba(255,255,255,0.08) !important;
+  border:1px solid rgba(255,255,255,0.18) !important;
+  border-radius: 999px;
+  padding: .25rem .65rem;
+  line-height: 1.2;
+}
+#kc-locale .kc-dropdown > a:hover,
+#kc-current-locale-link:hover,
+.pf-c-dropdown__toggle:hover {
+  background: rgba(255,255,255,0.14) !important;
+  border-color: rgba(255,255,255,0.28) !important;
+  color:#fff !important;
+}
+
+#kc-locale-dropdown,
+.pf-c-dropdown__menu {
+  background: rgba(15,23,42,0.98) !important;
+  border: 1px solid rgba(255,255,255,0.14) !important;
+  border-radius: 10px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+  right: 0;
+  left: auto;
+}
+
+#kc-locale-dropdown a,
+.pf-c-dropdown__menu .pf-c-dropdown__menu-item {
+  color:#e5e7eb !important;
+  padding: .45rem .75rem;
+}
+
+#kc-locale-dropdown a:hover,
+.pf-c-dropdown__menu .pf-c-dropdown__menu-item:hover {
+  background: rgba(255,255,255,0.08) !important;
+  color:#fff !important;
+}
+
+@media (max-width: 576px) {
+  #kc-locale { top: 8px; right: 8px; }
+}
+
+/* Layout refinements: constrain form width and center it */
+.login-pf-page .card-pf {
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+@media (min-width: 992px) {
+  /* Add some breathing room on large screens */
+  .login-pf-page { padding-top: 4vh; padding-bottom: 4vh; }
+}
+
+/* Form controls: improve readability on dark background */
+.login-pf-page input[type="text"],
+.login-pf-page input[type="password"],
+.login-pf-page input[type="email"],
+.login-pf-page input[type="tel"],
+.login-pf-page input[type="number"],
+.login-pf-page .form-control {
+  background: rgba(255,255,255,0.08) !important;
+  border: 1px solid rgba(255,255,255,0.18) !important;
+  color: #f8fafc !important;
+  box-shadow: none !important;
+}
+.login-pf-page input::placeholder,
+.login-pf-page .form-control::placeholder { color: #cbd5e1; opacity: .85; }
+.login-pf-page input:focus,
+.login-pf-page .form-control:focus {
+  border-color: rgba(91, 141, 239, 0.85) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(91,141,239,0.25) !important;
+}
+.login-pf-page label, .login-pf-page .control-label { color: #e5e7eb; }
+
+/* Buttons: keep primary brand full-width on small screens for alignment */
+@media (max-width: 576px) {
+  #kc-login, #kc-register, .pf-c-button.pf-m-primary { width: 100%; }
+}
+
+/* Locale dropdown polish */
+#kc-locale .kc-dropdown > a,
+#kc-current-locale-link,
+.pf-c-dropdown__toggle {
+  font-size: .9rem;
+}
+#kc-locale-dropdown,
+.pf-c-dropdown__menu {
+  min-width: 160px;
+  padding: .25rem 0;
+}
+#kc-locale-dropdown a.active,
+.pf-c-dropdown__menu .pf-c-dropdown__menu-item[aria-current="true"] {
+  background: rgba(255,255,255,0.12) !important;
+  color: #fff !important;
+  font-weight: 600;
+}
+/* Make sure the dropdown sits above the card and doesn’t clip */
+#kc-locale { z-index: 1100; }

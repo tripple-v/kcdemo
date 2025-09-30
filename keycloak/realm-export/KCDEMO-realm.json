@@ -6,7 +6,9 @@
   "duplicateEmailsAllowed": false,
   "resetPasswordAllowed": true,
   "verifyEmail": true,
-  "internationalizationEnabled": false,
+  "internationalizationEnabled": true,
+  "supportedLocales": ["en","fr"],
+  "defaultLocale": "en",
   "smtpServer": {
     "host": "mailhog",
     "port": "1025",
@@ -18,7 +20,7 @@
     "auth": "false"
   },
   "otpPolicyType": "totp",
-  "otpPolicyAlgorithm": "HmacSHA1",
+  "otpPolicyAlgorithm": "HmacSHA256",
   "otpPolicyDigits": 6,
   "otpPolicyInitialCounter": 0,
   "otpPolicyLookAheadWindow": 1,
@@ -27,6 +29,16 @@
     "FreeOTP",
     "Google Authenticator"
   ],
+  "webAuthnPolicyRpEntityName": "KCDEMO",
+  "webAuthnPolicySignatureAlgorithms": ["ES256","RS256"],
+  "webAuthnPolicyRpId": "auth.kcdemo.local",
+  "webAuthnPolicyAttestationConveyancePreference": "none",
+  "webAuthnPolicyAuthenticatorAttachment": "not specified",
+  "webAuthnPolicyRequireResidentKey": "No",
+  "webAuthnPolicyUserVerificationRequirement": "preferred",
+  "webAuthnPolicyCreateTimeout": 30000,
+  "webAuthnPolicyAvoidSameAuthenticatorRegister": false,
+  "webAuthnPolicyAcceptableAaguids": [],
   "roles": {
     "realm": [
       {
@@ -114,6 +126,24 @@
       },
       "groups": [
         "kcdemo-manager"
+      ],
+      "credentials": [
+        {
+          "type": "password",
+          "value": "demo",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "demo-webauthn",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Demo",
+      "lastName": "WebAuthn",
+      "email": "demo-webauthn@example.com",
+      "requiredActions": [
+        "webauthn-register"
       ],
       "credentials": [
         {
@@ -822,6 +852,31 @@
           }
         }
       ]
+    },
+    {
+      "name": "realm-roles-id",
+      "description": "Expose realm roles in ID token and userinfo for RBAC with mod_auth_openidc",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "false"
+      },
+      "protocolMappers": [
+        {
+          "name": "realm roles (ID + userinfo)",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "claim.name": "realm_access.roles",
+            "jsonType.label": "String",
+            "multivalued": "true",
+            "access.token.claim": "true",
+            "id.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ]
     }
   ],
   "clients": [
@@ -855,25 +910,50 @@
         "email",
         "roles",
         "web-origins",
-        "realm-roles-id"
-      ],
-      "protocolMappers": [
-        {
-          "name": "is_manager (user attribute)",
-          "protocol": "openid-connect",
-          "protocolMapper": "oidc-usermodel-attribute-mapper",
-          "consentRequired": false,
-          "config": {
-            "user.attribute": "is_manager",
-            "claim.name": "is_manager",
-            "jsonType.label": "boolean",
-            "multivalued": "false",
-            "id.token.claim": "true",
-            "access.token.claim": "true",
-            "userinfo.token.claim": "true"
-          }
-        }
+        "realm-roles-id",
+        "acr"
       ]
+    }
+  ],
+  "protocolMappers": [
+    {
+      "name": "is_manager (user attribute)",
+      "protocol": "openid-connect",
+      "protocolMapper": "oidc-usermodel-attribute-mapper",
+      "consentRequired": false,
+      "config": {
+        "user.attribute": "is_manager",
+        "claim.name": "is_manager",
+        "jsonType.label": "boolean",
+        "multivalued": "false",
+        "id.token.claim": "true",
+        "access.token.claim": "true",
+        "userinfo.token.claim": "true"
+      }
+    },
+    {
+      "name": "Authentication Methods References (amr)",
+      "protocol": "openid-connect",
+      "protocolMapper": "oidc-amr-mapper",
+      "consentRequired": false,
+      "config": {
+        "id.token.claim": "true",
+        "access.token.claim": "true"
+      }
+    },
+    {
+      "name": "amr_hint (session note)",
+      "protocol": "openid-connect",
+      "protocolMapper": "oidc-usersessionmodel-note-mapper",
+      "consentRequired": false,
+      "config": {
+        "user.session.note": "amr",
+        "id.token.claim": "true",
+        "access.token.claim": "true",
+        "introspection.token.claim": "true",
+        "claim.name": "amr_hint",
+        "jsonType.label": "String"
+      }
     }
   ]
 }
